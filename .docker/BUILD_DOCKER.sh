@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-dockerproject=4minitz/4minitz
+dockerproject=herbertabdillah/4minitz
 commitshort=$(git rev-parse --short HEAD 2> /dev/null | sed "s/\(.*\)/\1/")
 baseimagetag=$dockerproject:gitcommit-$commitshort
 
