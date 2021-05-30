@@ -52,7 +52,7 @@ RUN groupadd --gid 1000 node \
         wget \
         xz-utils \
         nano \
-        wkhtmltopdf xauth xvfb ghostscript=9.06~dfsg-2+deb8u6 \
+        wkhtmltopdf xauth xvfb ghostscript\
     && rm -rf /var/lib/apt/lists/* \
     \
     && curl -SLO "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-x64.tar.xz" \
@@ -63,8 +63,8 @@ RUN groupadd --gid 1000 node \
     && rm "node-v$NODE_VERSION-linux-x64.tar.xz" SHASUMS256.txt.asc SHASUMS256.txt \
     && ln -s /usr/local/bin/node /usr/local/bin/nodejs \
     \
-    && cp /usr/share/ghostscript/9.06/lib/PDFA_def.ps / \
-    && cp /usr/share/ghostscript/9.06/iccprofiles/srgb.icc / \
+    && cp /usr/share/ghostscript/9.26/lib/PDFA_def.ps / \
+    && cp /usr/share/ghostscript/9.26/iccprofiles/srgb.icc / \
     && sed -i 's/\/ICCProfile.*/\/ICCProfile \(\/srgb.icc\)/' /PDFA_def.ps \
     && sed -i 's/\[\ \/Title.*/\[\ \/Title\ \(4Minitz Meeting Minutes\)/' /PDFA_def.ps
 

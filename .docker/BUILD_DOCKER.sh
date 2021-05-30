@@ -79,4 +79,4 @@ echo "---------"
 echo "$pushlist"
 
 #### Clean up
-rm -rf ./4minitz_bin
+# rm -rf ./4minitz_bin
