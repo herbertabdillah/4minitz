@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { check } from 'meteor/check';
 import { Minutes } from '../minutes';
+import { Topic } from '../topic';
 import { UserRoles } from './../userroles';
 import { User } from '../user';
 import { MinutesSchema } from './minutes.schema';
@@ -115,6 +116,11 @@ Meteor.methods({
         if (!Meteor.userId()) {
             throw new Meteor.Error('not-authorized', 'You are not authorized to perform this action.');
         }
+        // console.log(doc);
+        // console.log(doc.githubIssueId);
+        let issue = Topic.getGithubIssue(doc.githubIssueId);
+        doc.githubIssueTitle = issue.title;
+        doc.githubIssueBody = issue.body;
 
         doc.updatedAt = new Date();
         doc.updatedBy = User.PROFILENAMEWITHFALLBACK(Meteor.user());
@@ -163,6 +169,10 @@ Meteor.methods({
             if (topicAlreadyExists) {
                 throw new Meteor.Error('invalid-argument', 'Topic already exists');
             }
+
+            let issue = Topic.getGithubIssue(doc.githubIssueId);
+            doc.githubIssueTitle = issue.title;
+            doc.githubIssueBody = issue.body;
 
             doc.createdInMinute = minutesId;
             doc.createdAt = new Date();

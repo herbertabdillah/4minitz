@@ -12,5 +12,6 @@ export function createTopic(minutesId, parentSeriesId, topicDoc) {
     const labelExtractor = new LabelExtractor(topicDoc.subject, parentSeriesId);
     aTopic.setSubject(labelExtractor.getCleanedString());
     aTopic.addLabelsByIds(labelExtractor.getExtractedLabelIds());
+    aTopic.setGithubIssue(topicDoc.githubIssueId);
     return aTopic;
 }

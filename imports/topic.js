@@ -10,6 +10,7 @@ import { MeetingSeries } from './meetingseries';
 import { InfoItemFactory } from './InfoItemFactory';
 import { InfoItem } from './infoitem';
 import { _ } from 'meteor/underscore';
+import { HTTP } from "meteor/http";
 
 import './helpers/promisedMethods';
 import './collections/minutes_private';
@@ -339,5 +340,75 @@ export class Topic {
     getResponsibles() {
         return this._topicDoc.responsibles;
     }
+    isLinkedWithGithubIssue() {
+        return true;
+        return this._topicDoc.githubIssueId != "";
+    }
+    setGithubIssue(issueId) {
+        this._topicDoc.githubIssueId = issueId;
+    }
+    getGithubIssue() {
+        let issueId = this._topicDoc.githubIssueId;
+        let repo = `4minitz/4minitz`;
+        let url = `https://api.github.com/repos/${repo}/issues/${issueId}`;
+        let options = {};
+        // let res = HTTP.get(url);
+        let res = HTTP.get(url, options);
+        res = res.content;
+        let githubIssue = JSON.parse(res);
 
+        return githubIssue;
+    }
+    static getGithubIssue(issueId) {
+        let repo = `4minitz/4minitz`;
+        let url = `https://api.github.com/repos/${repo}/issues/${issueId}`;
+        console.log(url);
+        let options = {
+            headers: {'user-agent': 'node.js'}
+        };
+        let res = HTTP.get(url, options);
+        res = res.content;
+        let githubIssue = JSON.parse(res);
+
+        return githubIssue;
+    }
+    // static getGithubIssueList() {
+    //     let repo = `4minitz/4minitz`;
+    //     let url = `https://api.github.com/repos/${repo}/issues`;
+    //     let options = {};
+    //     // let res = HTTP.get(url);
+    //     let res = HTTP.get(url, options);
+    //     res = res.content;
+    //     let githubIssue = JSON.parse(res);
+    //     // let issueIds = [];
+    //     // this.githubIssue.forEach(v => {
+    //     //     issueIds.push(v.id);
+    //     // });
+
+    //     // return issueIds;
+    //     return githubIssue;
+    // }
 }
+ Meteor.methods({
+    getGithubIssueList: function () {
+        // this.unblock();
+        // return Meteor.http.call("GET", "http://search.twitter.com/search.json?q=perkytweets");
+        let repo = `4minitz/4minitz`;
+        let url = `https://api.github.com/repos/${repo}/issues`;
+        let options = {
+            headers: {'user-agent': 'node.js'}
+        };
+        let res = HTTP.get(url, options);
+        return res;
+        // HTTP.get(url, options, function(err, res2) {
+        //     // console.log(res);
+        //     // console.log("======")
+        //     res = res2.content;
+        //     // console.log(res);
+        //     // let githubIssue = JSON.parse(res);
+        //     // return githubIssue;
+        //     return res;
+        // });
+
+    }
+});

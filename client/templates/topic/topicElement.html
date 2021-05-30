@@ -123,6 +123,15 @@
 
         {{#unless isCollapsed}}
             <div class="leftIndent-desktop">
+                {{#if topic.githubIssueId }}
+                    <div>
+                        Github Issue:
+                        <a href="https://github.com/4minitz/4minitz/issues/{{topic.githubIssueId}}">
+                            <h2>#{{ topic.githubIssueId }} : {{ topic.githubIssueTitle }}</h2>
+                        </a>
+                        {{ topic.githubIssueBody }}
+                    </div>
+                {{/if}}
                 {{> topicInfoItemList getData}}
             </div>
         {{/unless}}

@@ -32,6 +32,9 @@ export const TopicSchema = SchemaClass.create({
         // visibleFor: array of user IDs; optional since it is only necessary for topics living in the
         // topics collection. Topics inside a minutes do not have this field
         visibleFor: {type: [String], validators: [{type: 'meteorId'}], optional: true},
+        githubIssueId: {type: String, optional: true},
+        githubIssueTitle: {type: String, optional: true},
+        githubIssueBody: {type: String, optional: true},
     }
 });
 

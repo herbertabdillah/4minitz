@@ -65,6 +65,53 @@ function configureSelect2Labels() {
     selectLabels.trigger('change');
 }
 
+function configureGithubIssueId() {
+
+    // let aMin = new Minutes(_minutesID);
+    // let aSeries = aMin.parentMeetingSeries();
+
+    let selectLabels = $('#id_item_selGithub');
+    selectLabels.find('option')     // clear all <option>s
+        .remove();
+
+    let editItem = getEditTopic();
+    console.log(editItem);
+
+    Meteor.call("getGithubIssueList", function(err, res) {
+        // console.log(res);
+        let githubIssueList = JSON.parse(res.content);
+        let selectOptions = []
+
+        githubIssueList.forEach(label => {
+            selectOptions.push ({id: label.number, text: `#${label.number} - ${label.title}`});
+        });
+
+        console.log(selectOptions);
+        selectLabels.select2({
+            placeholder: 'Select...',
+            tags: true,                     // Allow freetext adding
+            tokenSeparators: [',', ';'],
+            data: selectOptions             // push <option>s data
+        });
+
+        if (editItem) {
+            console.log("masuk");
+            selectLabels.val(editItem._topicDoc.githubIssueId);
+            // selectLabels.trigger('change');
+        }
+        // select the options that where stored with this topic last time
+        // let editItem = getEditTopic();
+        // if (editItem) {
+        //     selectLabels.val(editItem.getLabelsRawArray());
+        // }
+        selectLabels.trigger('change');
+    });
+
+    
+    // let githubIssueList = Topic.getGithubIssueList();
+
+}
+
 function closePopupAndUnsetIsEdited() {
     const topic = getEditTopic();
     IsEditedService.removeIsEditedTopic(_minutesID, topic._topicDoc._id, false);
@@ -81,6 +128,9 @@ Template.topicEdit.helpers({
 
 Template.topicEdit.events({
     'submit #frmDlgAddTopic': async function (evt, tmpl) {
+        let githubIssueId = tmpl.$('#id_item_selGithub').val()[0];
+        console.log(githubIssueId);
+        if (!githubIssueId) githubIssueId = "";
         evt.preventDefault();
 
         let editTopic = getEditTopic();
@@ -100,6 +150,7 @@ Template.topicEdit.events({
         topicDoc.labels = labels;
         topicDoc.isEditedBy = null;     // We don't use the IsEditedService here...
         topicDoc.isEditedDate = null;   // ... as this would save the topic twice to the DB. And it provokes Issue #379
+        topicDoc.githubIssueId = githubIssueId;   // ... as this would save the topic twice to the DB. And it provokes Issue #379
 
         const aTopic = createTopic(_minutesID, aSeries._id, topicDoc);
         aTopic.save().catch(handleError);
@@ -138,6 +189,7 @@ Template.topicEdit.events({
             selectLabels.val([]).trigger('change');
         }
         configureSelect2Labels(_minutesID, '#id_item_selLabels', getEditTopic());
+        configureGithubIssueId(_minutesID, '#id_item_selGithubIssueId', getEditTopic());
         let saveButton = $('#btnTopicSave');
         let cancelButton = $('#btnTopicCancel');
         saveButton.prop('disabled',false);
